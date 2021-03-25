@@ -2,8 +2,8 @@ import pygame
 from player import Player
 from network import Network
 
-width = 500
-height = 500
+width = 602
+height = 602
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Client")
 
@@ -18,10 +18,14 @@ def make_pos(tup):
     return str(tup[0]) + "," + str(tup[1])
 
 
-def redrawWindow(win, player, player2):
+def redrawWindow(win, p1, p2):
     win.fill((255, 255, 255))
-    player.draw(win)
-    player2.draw(win)
+    pygame.draw.line(win, (0,0,0), (0,201), (602,201), 1)
+    pygame.draw.line(win, (0,0,0), (0,402), (602,402), 1)
+    pygame.draw.line(win, (0,0,0), (201,0), (201,602), 1)
+    pygame.draw.line(win, (0,0,0), (402,0), (402,602), 1)
+    p1.draw(win, symbol, coord)
+    p2.draw(win)
     pygame.display.update()
 
 

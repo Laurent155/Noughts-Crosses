@@ -12,6 +12,7 @@ port = 5555  # this is a port that's typically open
 # this is for an IPV4 address socket.AF_INET is the type we'll use and SOCK_STREAM is how the server string comes in
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+
 # will do a try/catch statement here in case the server and port fail to bind to the socket
 try:
     s.bind((server, port))  # bind the ip address (server) to this given port
@@ -22,8 +23,7 @@ except socket.error as e:
 s.listen(2)
 print("Waiting for a connection, Server Started")
 
-
-players = [Player("circle"), Player("cross")]
+players = [Player("circle", True), Player("cross", False)]
 
 
 # defining a threaded function
@@ -49,7 +49,7 @@ def threaded_client(conn, player):
                     reply = players[0]
                 else:
                     reply = players[1]
-
+                reply.turn = not reply.turn
                 print("Received: ", data)
                 print("Sending:", reply)
             # this is just encoding it into a bites object

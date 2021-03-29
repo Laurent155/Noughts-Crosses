@@ -1,23 +1,12 @@
 import pygame
 from player import Player
 from network import Network
-from server import currentPlayer
+import pickle
 
 width = 602
 height = 602
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Client")
-
-clientNumber = currentPlayer
-
-
-def read_pos(str):
-    str = str.split(",")
-    return int(str[0]), int(str[1])
-
-
-def make_pos(tup):
-    return str(tup[0]) + "," + str(tup[1])
 
 
 def redrawWindow(win, p1, p2):
@@ -27,14 +16,14 @@ def redrawWindow(win, p1, p2):
     pygame.draw.line(win, (0, 0, 0), (201, 0), (201, 602), 1)
     pygame.draw.line(win, (0, 0, 0), (402, 0), (402, 602), 1)
     for i in p1.moves:
-        p1.draw(win, i)
+        p1.draw(i, win)
     for i in p2.moves:
-        p2.draw(win, i)
+        p2.draw(i, win)
     pygame.display.update()
 
 
-def get_coord(pos):
-    return pos[0] // 201, pos[1] // 201
+def get_coord(tup):
+    return tup*201 + 100
 
 
 def main():
@@ -42,19 +31,10 @@ def main():
     circle_turn = True
     cross_turn = False
     n = Network()
-    if clientNumber == 1:
-        p1 = Player("circle", win)
-        p2 = Player("cross", win)
-    else:
-        p1 = Player("cross", win)
-        p2 = Player("circle", win)
-
+    p1 = n.getP()
+    pos = (1, 1)
     while run:
-        # p2Pos = read_pos(n.send(make_pos(p1.moves[-1])))
-        # p2.x = p2Pos[0]
-        # p2.y = p2Pos[1]
-        # p2.update()
-
+        p2 = n.send(p1)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False

@@ -29,8 +29,7 @@ game = Game("circle")
 
 # defining a threaded function
 def threaded_client(conn, player):
-    conn.send(pickle.dumps(players[player]))
-    conn.send(pickle.dumps(game))
+    conn.send(pickle.dumps((players[player], game)))
     # want to send a message to confirm the connection
 
     reply = ""

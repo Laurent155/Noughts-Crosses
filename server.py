@@ -2,6 +2,7 @@ import socket
 from _thread import *
 import pickle
 from player import Player
+from player import PlayerTurn
 
 # this is the(a) server script, it always has to be running, need to first run this server
 # script, and we can try to connect clients to it
@@ -25,7 +26,6 @@ print("Waiting for a connection, Server Started")
 
 players = [Player("circle", True), Player("cross", False)]
 
-
 # defining a threaded function
 def threaded_client(conn, player):
     conn.send(pickle.dumps(players[player]))
@@ -45,11 +45,12 @@ def threaded_client(conn, player):
                 print("Disconnected")
                 break
             else:
+                # player.turn = False
                 if player == 1:
                     reply = players[0]
                 else:
                     reply = players[1]
-                reply.turn = not reply.turn
+                # reply.turn = not reply.turn
                 print("Received: ", data)
                 print("Sending:", reply)
             # this is just encoding it into a bites object

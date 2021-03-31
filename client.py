@@ -18,10 +18,10 @@ def redrawWindow(win, game):
     pygame.draw.line(win, (0, 0, 0), (402, 0), (402, 602), 1)
     for i in game.p1moves:
         if i != (100, 100):
-            p1.draw(i, win)
+            game.draw(i, win, symbol)
     for i in game.p2moves:
         if i != (100, 100):
-            p2.draw(i, win)
+            game.draw(i, win, symbol)
     pygame.display.update()
 
 

@@ -18,15 +18,22 @@ def redrawWindow(win, game):
     pygame.draw.line(win, (0, 0, 0), (402, 0), (402, 602), 1)
     for i in game.p1moves:
         if i != (100, 100):
-            game.draw(i, win, symbol)
+            game.draw(i, win, p1.symbol)
     for i in game.p2moves:
         if i != (100, 100):
-            game.draw(i, win, symbol)
+            game.draw(i, win, other_one(p1.symbol))
     pygame.display.update()
 
 
 def get_coord(tup):
     return tup[0] // 201, tup[1] // 201
+
+def other_one(p):
+    if p == "circle":
+        return "cross"
+    else:
+        return "circle"
+
 def swap_turn(game):
     if game.turn == "circle":
         game.turn = "cross"

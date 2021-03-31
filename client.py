@@ -2,7 +2,7 @@ import pygame
 from player import Player
 from network import Network
 import pickle
-from player import PlayerTurn
+from game import Game
 
 width = 602
 height = 602
@@ -10,16 +10,16 @@ win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Client")
 
 
-def redrawWindow(win, p1, p2):
+def redrawWindow(win, game):
     win.fill((255, 255, 255))
     pygame.draw.line(win, (0, 0, 0), (0, 201), (602, 201), 1)
     pygame.draw.line(win, (0, 0, 0), (0, 402), (602, 402), 1)
     pygame.draw.line(win, (0, 0, 0), (201, 0), (201, 602), 1)
     pygame.draw.line(win, (0, 0, 0), (402, 0), (402, 602), 1)
-    for i in p1.moves:
+    for i in game.p1moves:
         if i != (100, 100):
             p1.draw(i, win)
-    for i in p2.moves:
+    for i in game.p2moves:
         if i != (100, 100):
             p2.draw(i, win)
     pygame.display.update()
@@ -27,29 +27,30 @@ def redrawWindow(win, p1, p2):
 
 def get_coord(tup):
     return tup[0] // 201, tup[1] // 201
-
+def swap_turn(game):
+    if game.turn == "circle":
+        game.turn = "cross"
+    else:
+        game.turn = "circle"
 
 def main():
     run = True
     n = Network()
-    p1 = n.getP()
+    p1, game = n.getP()
     pos = (100, 100)
     while run:
-        p2 = n.send(p1)
-        if not p2.turn:
-            p1.turn = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
-            if p1.turn:
-                if not p2.turn and event.type == pygame.MOUSEBUTTONDOWN:
+            if game.turn == p1.symbol:
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = get_coord(pygame.mouse.get_pos())
-                    p1.turn = False
-        if pos not in p1.moves and pos not in p2.moves:
-            p1.moves.append(pos)
-
-        redrawWindow(win, p1, p2)
+                    swap_turn(game)
+        if pos not in game.p1moves and pos not in game.p2moves:
+            game.p1moves.append(pos)
+        game = n.send(game)
+        redrawWindow(win, game)
 
 
 main()

@@ -4,9 +4,9 @@ class Game:
         self.p1moves = []
         self.p2moves = []
    
-    def draw(self, coord, win):
+    def draw(self, coord, win, symbol):
         coord = coord[0] * 201 + 100, coord[1] * 201 + 100
-        if self.symbol == "circle":
+        if symbol == "circle":
             pygame.draw.circle(win, (0, 0, 0), coord, 20, 5)
         else:
             pygame.draw.line(win, (0, 0, 0), (coord[0] - 20, coord[1] - 20), (coord[0] + 20, coord[1] + 20), 5)

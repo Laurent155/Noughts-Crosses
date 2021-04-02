@@ -2,26 +2,43 @@ import pygame
 from player import Player
 from network import Network
 import pickle
-from player import PlayerTurn
+from game import Game, Turn
 
 width = 602
 height = 602
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Client")
+pygame.font.init()
+myfont = pygame.font.SysFont('Comic Sans MS', 30)
 
 
-def redrawWindow(win, p1, p2):
+def redrawWindow(win, game, symbol):
     win.fill((255, 255, 255))
-    pygame.draw.line(win, (0, 0, 0), (0, 201), (602, 201), 1)
-    pygame.draw.line(win, (0, 0, 0), (0, 402), (602, 402), 1)
-    pygame.draw.line(win, (0, 0, 0), (201, 0), (201, 602), 1)
-    pygame.draw.line(win, (0, 0, 0), (402, 0), (402, 602), 1)
-    for i in p1.moves:
-        if i != (100, 100):
-            p1.draw(i, win)
-    for i in p2.moves:
-        if i != (100, 100):
-            p2.draw(i, win)
+    if game.winner == 'neither':
+
+        pygame.draw.line(win, (0, 0, 0), (0, 201), (602, 201), 1)
+        pygame.draw.line(win, (0, 0, 0), (0, 402), (602, 402), 1)
+        pygame.draw.line(win, (0, 0, 0), (201, 0), (201, 602), 1)
+        pygame.draw.line(win, (0, 0, 0), (402, 0), (402, 602), 1)
+        for i in game.p1moves:
+            if i != (100, 100):
+                game.draw(i, win, 'circle')
+        for i in game.p2moves:
+            if i != (100, 100):
+                game.draw(i, win, 'cross')
+    elif game.winner == 'circle':
+        if symbol == 'circle':
+            textsurface = myfont.render('You win!', False, (0, 0, 0))
+        else:
+            textsurface = myfont.render('You lose!', False, (0, 0, 0))
+        win.blit(textsurface, (300, 300))
+    elif game.winner == 'cross':
+        if symbol == 'cross':
+            textsurface = myfont.render('You win!', False, (0, 0, 0))
+        else:
+            textsurface = myfont.render('You lose!', False, (0, 0, 0))
+        win.blit(textsurface, (300, 300))
+
     pygame.display.update()
 
 
@@ -32,24 +49,23 @@ def get_coord(tup):
 def main():
     run = True
     n = Network()
-    p1 = n.getP()
+    symb = n.getP()
+    print(symb)
     pos = (100, 100)
+    game = Game('circle')
     while run:
-        p2 = n.send(p1)
-        if not p2.turn:
-            p1.turn = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
-            if p1.turn:
-                if not p2.turn and event.type == pygame.MOUSEBUTTONDOWN:
-                    pos = get_coord(pygame.mouse.get_pos())
-                    p1.turn = False
-        if pos not in p1.moves and pos not in p2.moves:
-            p1.moves.append(pos)
 
-        redrawWindow(win, p1, p2)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = get_coord(pygame.mouse.get_pos())
+                game = n.send(Turn(symb, pos))
+                pos = (100, 100)
+        game = n.send(Turn(symb, pos))
+
+        redrawWindow(win, game, symb)
 
 
 main()

@@ -7,6 +7,7 @@ class Game:
         self.p1moves = []
         self.p2moves = []
         self.winner = 'neither'
+        self.tie = 'no'
 
     def draw(self, coord, win, symbol):
         coord = coord[0] * 201 + 100, coord[1] * 201 + 100
@@ -53,6 +54,10 @@ class Game:
             elif all([x in self.p2moves for x in poss]):
                 self.winner = 'cross'
 
+    def check_draw(self):
+        if len(self.p1moves) + len(self.p2moves) == 9:
+            self.tie = 'yes'
+            self.winner = 'no_winner'
 
     def __str__(self):
         return self.winner

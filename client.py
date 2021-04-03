@@ -1,7 +1,5 @@
 import pygame
-from player import Player
 from network import Network
-import pickle
 from game import Game, Turn
 
 width = 602
@@ -31,13 +29,16 @@ def redrawWindow(win, game, symbol):
             textsurface = myfont.render('You win!', False, (0, 0, 0))
         else:
             textsurface = myfont.render('You lose!', False, (0, 0, 0))
-        win.blit(textsurface, (300, 300))
+        win.blit(textsurface, (260, 270))
     elif game.winner == 'cross':
         if symbol == 'cross':
             textsurface = myfont.render('You win!', False, (0, 0, 0))
         else:
             textsurface = myfont.render('You lose!', False, (0, 0, 0))
-        win.blit(textsurface, (300, 300))
+        win.blit(textsurface, (260, 270))
+    if game.tie == 'yes':
+        textsurface = myfont.render('Draw!', False, (0, 0, 0))
+        win.blit(textsurface, (270, 270))
 
     pygame.display.update()
 
@@ -64,7 +65,6 @@ def main():
                 game = n.send(Turn(symb, pos))
                 pos = (100, 100)
         game = n.send(Turn(symb, pos))
-
         redrawWindow(win, game, symb)
 
 

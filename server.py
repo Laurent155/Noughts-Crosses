@@ -43,14 +43,8 @@ def threaded_client(conn, player):
                     game.add_move(data)
                     game.change_turn()
                     game.check_victory()
-                    print("checked victory")
-                    print(game.winner)
-                if player == 1:
-                    reply = game
-                else:
-                    reply = game
-
-        
+                    game.check_draw()
+                reply = game
             conn.sendall(pickle.dumps(reply))
         except:
             break
